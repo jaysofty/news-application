@@ -1,10 +1,92 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SuperBo News Dashboard
+
+SuperBo News Dashboard is a full-stack news article management application built with Next.js, TypeScript, Prisma, PostgreSQL, React Query, Docker, and Nginx.
+
+The application allows users to view, search, create, update, and delete news articles through a simple and professional dashboard.
+
+## Features
+
+- View news articles
+- Search articles by title, description, and source
+- Create articles
+- Edit articles
+- PATCH articles
+- PUT articles
+- Delete articles
+- Delete confirmation dialog
+- Toast notifications
+- Loading and error states
+- Empty search state
+- React Query for server-state management
+- Prisma ORM
+- PostgreSQL database
+- Dockerized application
+- Nginx reverse proxy
+
+## Tech Stack
+
+- **Next.js 16**
+- **React 19**
+- **TypeScript**
+- **Tailwind CSS**
+- **TanStack React Query**
+- **React Hot Toast**
+- **Prisma 7**
+- **PostgreSQL**
+- **Docker & Docker Compose**
+- **Nginx**
+
+## Project Structure
+
+```text
+src/
+├── app/
+│   ├── api/
+│   │   └── articles/
+│   │       ├── route.ts
+│   │       └── [id]/
+│   │           └── route.ts
+│   └── page.tsx
+│
+├── components/
+│   └── news/
+│       ├── ArticleCard.tsx
+│       ├── ArticleList.tsx
+│       ├── ArticleForm.tsx
+│       ├── DeleteArticleDialog.tsx
+│       └── NewsDashboard.tsx
+│
+├── hooks/
+│   ├── useArticles.ts
+│   └── useArticleActions.ts
+│
+├── lib/
+│   ├── articles/
+│   │   └── articles.ts
+│   └── prisma.ts
+│
+└── types/
+    └── article.ts
+
+prisma/
+├── migrations/
+├── schema.prisma
+└── seed.ts
+
+nginx/
+├── Dockerfile
+└── nginx.conf
+
+Dockerfile
+docker-compose.yml
+prisma.config.ts
 
 ## Getting Started
 
 First, run the development server:
 
 ```bash
+npm install
 npm run dev
 # or
 yarn dev

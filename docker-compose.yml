@@ -1,0 +1,109 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: superbo_db
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+    networks:
+      - superbo-network
+
+
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: migrate
+
+    container_name: superbo_migrate
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+
+    command:
+      [
+        "npx",
+        "prisma",
+        "migrate",
+        "deploy",
+        "--schema=/app/prisma/schema.prisma"
+      ]
+
+    networks:
+      - superbo-network
+
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runner
+
+    container_name: superbo-news
+    restart: unless-stopped
+
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL}
+
+    expose:
+      - "3000"
+
+    networks:
+      - superbo-network
+
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+
+    container_name: superbo_nginx
+    restart: unless-stopped
+
+    depends_on:
+      - app
+
+    ports:
+      - "80:80"
+
+    networks:
+      - superbo-network
+
+
+volumes:
+  postgres_data:
+
+
+networks:
+  superbo-network:
+    driver: bridge
+    
+    # docker compose build app
+    # docker compose up

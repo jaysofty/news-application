@@ -1,0 +1,39 @@
+packages
+
+npm install @prisma/client
+npm install -D prisma
+npm install @prisma/adapter-pg pg
+
+
+React Query to handle fetching/caching.
+npm install @tanstack/react-query
+
+npm install react-hot-toast
+
+then run
+npx prisma init
+
+create postgres db
+docker run --name news-postgres \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=password \
+  -e POSTGRES_DB=news_dashboard \
+  -p 5432:5432 \
+  -d postgres:16-alpine
+
+set connection string in .env
+
+DATABASE_URL="postgresql://postgres:password@localhost:5432/news_dashboard?schema=public"
+
+------------------------------
+exec into the container 
+docker compose exec app sh
+
+then check db connection string
+echo $DATABASE_URL
+we
+check db
+docker compose exec postgres psql -U postgres -d superbo_db -c "\dt"
+
+deploy prisma migration
+npx prisma migrate deploy

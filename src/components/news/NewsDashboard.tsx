@@ -163,7 +163,7 @@ export default function NewsDashboard() {
               articles={articles}
               onEdit={openEditModal}
               onDelete={handleDelete}
-              itemsPerPage={2}
+              itemsPerPage={3}
             />
           )}
         </section>
